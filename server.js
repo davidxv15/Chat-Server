@@ -1,12 +1,12 @@
-const WebSocket = require('ws');
+const WebSocket = require("ws");
 
 const server = new WebSocket.Server({ port: 3000 });
 
-server.on('connection', (socket) => {
-  console.log('Client connected');
+server.on("connection", (socket) => {
+  console.log("Client connected");
 
-  socket.on('message', (message) => {
-    console.log('Received:', message);
+  socket.on("message", (message) => {
+    console.log("Received:", message);
 
     // Broadcast the message to all clients
     server.clients.forEach((client) => {
@@ -16,9 +16,9 @@ server.on('connection', (socket) => {
     });
   });
 
-  socket.on('close', () => {
-    console.log('Client disconnected');
+  socket.on("close", () => {
+    console.log("Client disconnected");
   });
 });
 
-console.log('WebSocket server is running on ws://localhost:3000');
+console.log("WebSocket server is running on ws://localhost:3000");
