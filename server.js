@@ -16,6 +16,10 @@ server.on('connection', (socket) => {
     });
   });
 
+  socket.on('error', (error) => {
+    console.error('WebSocket error:', error);
+  });
+
   socket.on('close', () => {
     console.log('Client disconnected');
   });
