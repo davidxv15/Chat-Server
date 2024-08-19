@@ -8,6 +8,10 @@ const { protect } = require('./middleware/auth');
 const app = express();
 app.use(express.json());
 
+const cors = require('cors');
+app.use(cors());
+
+
 mongoose.connect('mongodb://localhost:27017/chat-app', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
