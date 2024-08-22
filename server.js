@@ -45,17 +45,21 @@ wss.on('connection', (socket, req) => {
   try {
     // Verify the token
     const decoded = jwt.verify(token, 'your_jwt_secret');
-    socket.user = decoded.id; // Save the decoded user ID in the socket
+    socket.user = { id: decoded.id, username: decoded.username };// setting to use username
 
-    console.log('Client connected with user ID:', socket.user);
+    console.log('Client connected with user ID:', socket.user.id);
 
     socket.on('message', (message) => {
+      const messageData = JSON.stringify({
+        username: socket.user.username,
+        message: message.toString(), // wraps message as part of Json object
+      });
       console.log('Received:', message.toString());
 
       // Broadcast the message to ALL clients. think 'open back and forth'
       wss.clients.forEach((client) => {
         if (client.readyState === client.OPEN) {
-          client.send(message.toString());
+          client.send(messageData); // from above, the 'packaged' object as a whole
         }
       });
     });
