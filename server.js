@@ -68,7 +68,7 @@ wss.on('connection', (socket, req) => {
       console.log(`Client disconnected (code: ${code}, reason: ${reason})`);
     });
   } catch (error) {
-    conselog.error('Token verification failed:', error.message);
+    console.log.error('Token verification failed:', error.message);
     socket.close(4002, 'Token invalid');
   }
 });
