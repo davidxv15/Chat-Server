@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { Server } = require('ws');
+const { Server } = require('ws'); // my WebSocket lib import
 const jwt = require('jsonwebtoken'); // Import JWT library
 const authRoutes = require('./routes/auth');
 const { protect } = require('./middleware/auth');
@@ -52,9 +52,9 @@ wss.on('connection', (socket, req) => {
     socket.on('message', (message) => {
       console.log('Received:', message.toString());
 
-      // Broadcast the message to all clients
+      // Broadcast the message to ALL clients. think 'open back and forth'
       wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
+        if (client.readyState === client.OPEN) {
           client.send(message.toString());
         }
       });
@@ -64,10 +64,11 @@ wss.on('connection', (socket, req) => {
       console.error('WebSocket error:', error);
     });
 
-    socket.on('close', () => {
-      console.log('Client disconnected');
+    socket.on('close', (code, reason) => {
+      console.log(`Client disconnected (code: ${code}, reason: ${reason})`);
     });
   } catch (error) {
+    conselog.error('Token verification failed:', error.message);
     socket.close(4002, 'Token invalid');
   }
 });
