@@ -50,16 +50,23 @@ wss.on('connection', (socket, req) => {
     console.log('Client connected with user ID:', socket.user.id);
 
     socket.on('message', (message) => {
-      const messageData = JSON.stringify({
-        username: socket.user.username,
-        message: message.toString(), // wraps message as part of Json object
-      });
       console.log('Received:', message.toString());
 
-      // Broadcast the message to ALL clients. think 'open back and forth'
+       // Ensure the message is a JSON string
+       let messageData;
+       try {
+         messageData = JSON.parse(message);
+       } catch (e) {
+         console.error('Message is not JSON, sending as string:', message);
+         messageData = { username: socket.user.username, message };
+       }
+ 
+       const jsonString = JSON.stringify(messageData);
+
+      // Broadcast the JSONmessage to ALL clients. think 'open back and forth'
       wss.clients.forEach((client) => {
         if (client.readyState === client.OPEN) {
-          client.send(messageData); // from above, the 'packaged' object as a whole
+          client.send(jsonString); // Send the message as it was received (already JSON-stringified)
         }
       });
     });
