@@ -18,7 +18,7 @@ router.post('/register', async (req, res) => {
   } catch (error) {
     console.error('Registration error:', error);  // Debugging
 
-    // Check if the error is due to a duplicate username
+    // Check if the error is due to a duplicate username, maybe strike for 'catch all' msg
     if (error.code === 11000) {
       return res.status(400).json({ message: 'Username already exists' });
     }
