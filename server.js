@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const { Server } = require("ws"); // my WebSocket lib import
-const jwt = require("jsonwebtoken"); // Import JWT library
+const { Server } = require("ws"); // WebSocket import
+const jwt = require("jsonwebtoken");
 const authRoutes = require("./routes/auth");
 const { protect } = require("./middleware/auth");
 
@@ -30,7 +30,11 @@ const server = app.listen(3000, () => {
   console.log("Server running on port 3000");
 });
 
+// WebSocket server
 const wss = new Server({ server, path: "/ws" });
+
+// Keep track of clients in each room
+const rooms = {};
 
 wss.on("connection", (socket, req) => {
   // Extract the token from the URL query string
@@ -43,39 +47,55 @@ wss.on("connection", (socket, req) => {
   try {
     // Verify the token
     const decoded = jwt.verify(token, "your_jwt_secret");
-    socket.user = { id: decoded.id, username: decoded.username }; // setting to use username
+    socket.user = { id: decoded.id, username: decoded.username };
 
     console.log("Client connected with user ID:", socket.user.id);
 
+    // Store the room the user joins
+    let currentRoom = null;
+
     socket.on("message", (message) => {
-      console.log("Received:", message.toString());
-
-      // Ensure the message is a JSON string
-      let messageData;
       try {
-        messageData = JSON.parse(message);
-      } catch (e) {
-        console.error("Message is not JSON, sending as string:", message);
-        messageData = { username: socket.user.username, message };
-      }
+        const messageData = JSON.parse(message);
+        
+        if (messageData.type === 'join') {
+          // Handle user joining a room
+          currentRoom = messageData.room;
 
-      const jsonString = JSON.stringify(messageData);
+          if (!rooms[currentRoom]) {
+            rooms[currentRoom] = [];
+          }
 
-      // Broadcast the JSONmessage to ALL clients. think 'open back and forth'
-      wss.clients.forEach((client) => {
-        if (client.readyState === client.OPEN) {
-          client.send(jsonString); // Send the message as it was received (already JSON-stringified)
+          rooms[currentRoom].push(socket);
+          console.log(`${socket.user.username} joined room: ${currentRoom}`);
+        } else if (messageData.type === 'message') {
+          // Broadcast the message to clients in the same room
+          if (currentRoom && rooms[currentRoom]) {
+            rooms[currentRoom].forEach(client => {
+              if (client !== socket && client.readyState === client.OPEN) {
+                client.send(JSON.stringify({
+                  username: socket.user.username,
+                  message: messageData.message,
+                  timestamp: new Date().toLocaleTimeString(),
+                  room: currentRoom
+                }));
+              }
+            });
+          }
         }
-      });
+      } catch (e) {
+        console.error("Invalid message format", e);
+      }
     });
 
-    socket.on("error", (error) => {
-      console.error("WebSocket error:", error);
+    socket.on("close", () => {
+      // Remove the client from the room when disconnected
+      if (currentRoom && rooms[currentRoom]) {
+        rooms[currentRoom] = rooms[currentRoom].filter(client => client !== socket);
+        console.log(`${socket.user.username} left room: ${currentRoom}`);
+      }
     });
 
-    socket.on("close", (code, reason) => {
-      console.log(`Client disconnected (code: ${code}, reason: ${reason})`);
-    });
   } catch (error) {
     console.error("Token verification failed:", error.message);
     socket.close(4002, "Token invalid");
