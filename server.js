@@ -68,13 +68,14 @@ wss.on("connection", (socket, req) => {
       if (messageData.type === "join") {
         currentRoom = messageData.room;  // Track the current room
         socket.room = currentRoom;
+        socket.user.username = messageData.username; 
         console.log(`${socket.user.username || "Unknown User"} joined: ${currentRoom}`);
       } 
 
       // Broadcast message only to the current room users
       if (messageData.type === "message" && currentRoom) {
         const jsonString = JSON.stringify({
-          username: socket.user.username || 'Anonymous',
+          username: socket.user.username || 'Anonymouss',
           message: messageData.message,
           room: currentRoom,
         });
