@@ -55,47 +55,42 @@ wss.on("connection", (socket, req) => {
     let currentRoom = null;
 
     socket.on("message", (message) => {
+      let messageData;
+
       try {
-        const messageData = JSON.parse(message);
-        
-        if (messageData.type === 'join') {
-          // Handle user joining a room
-          currentRoom = messageData.room;
-
-          if (!rooms[currentRoom]) {
-            rooms[currentRoom] = [];
-          }
-
-          rooms[currentRoom].push(socket);
-          console.log(`${socket.user.username} joined room: ${currentRoom}`);
-        } else if (messageData.type === 'message') {
-          // Broadcast the message to clients in the same room
-          if (currentRoom && rooms[currentRoom]) {
-            rooms[currentRoom].forEach(client => {
-              if (client !== socket && client.readyState === client.OPEN) {
-                client.send(JSON.stringify({
-                  username: socket.user.username,
-                  message: messageData.message,
-                  timestamp: new Date().toLocaleTimeString(),
-                  room: currentRoom
-                }));
-              }
-            });
-          }
-        }
+        messageData = JSON.parse(message);
       } catch (e) {
-        console.error("Invalid message format", e);
+        console.error("Message is not JSON:", message);
+        return;
+      }
+
+      // Handle room joining
+      if (messageData.type === "join") {
+        currentRoom = messageData.room;  // Track the current room
+        socket.room = currentRoom;
+        console.log(`${socket.user.username || "Unknown user"} joined room: ${currentRoom}`);
+      } 
+
+      // Broadcast message only to the current room users
+      if (messageData.type === "message" && currentRoom) {
+        const jsonString = JSON.stringify({
+          username: socket.user.username,
+          message: messageData.message,
+          room: currentRoom,
+        });
+
+        // Broadcast to everyone in the same room
+        wss.clients.forEach((client) => {
+          if (client.room === currentRoom && client.readyState === client.OPEN) {
+            client.send(jsonString);
+          }
+        });
       }
     });
 
     socket.on("close", () => {
-      // Remove the client from the room when disconnected
-      if (currentRoom && rooms[currentRoom]) {
-        rooms[currentRoom] = rooms[currentRoom].filter(client => client !== socket);
-        console.log(`${socket.user.username} left room: ${currentRoom}`);
-      }
+      console.log(`${socket.user.username} disconnected from room: ${currentRoom}`);
     });
-
   } catch (error) {
     console.error("Token verification failed:", error.message);
     socket.close(4002, "Token invalid");
