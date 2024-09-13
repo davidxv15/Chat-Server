@@ -47,7 +47,7 @@ wss.on("connection", (socket, req) => {
   try {
     // Verify the token
     const decoded = jwt.verify(token, "your_jwt_secret");
-    socket.user = { id: decoded.id, username: decoded.username || 'Anonymous' };
+    socket.user = { id: decoded.id, username: decoded.username || "Anonymous" };
 
     console.log("Client connected with user ID:", socket.user.id);
 
@@ -66,23 +66,28 @@ wss.on("connection", (socket, req) => {
 
       // Handle room joining
       if (messageData.type === "join") {
-        currentRoom = messageData.room;  // Track the current room
+        currentRoom = messageData.room; // Track the current room
         socket.room = currentRoom;
-        socket.user.username = messageData.username; 
-        console.log(`${socket.user.username || "Unknown User"} joined: ${currentRoom}`);
-      } 
+        socket.user.username = messageData.username;
+        console.log(
+          `${socket.user.username || "Unknown User"} joined: ${currentRoom}`
+        );
+      }
 
       // Broadcast message only to the current room users
       if (messageData.type === "message" && currentRoom) {
         const jsonString = JSON.stringify({
-          username: socket.user.username || 'Anonymouss',
+          username: socket.user.username || "Anonymouss",
           message: messageData.message,
           room: currentRoom,
         });
 
         // Broadcast to everyone in the same room
         wss.clients.forEach((client) => {
-          if (client.room === currentRoom && client.readyState === client.OPEN) {
+          if (
+            client.room === currentRoom &&
+            client.readyState === client.OPEN
+          ) {
             client.send(jsonString);
           }
         });
@@ -90,7 +95,9 @@ wss.on("connection", (socket, req) => {
     });
 
     socket.on("close", () => {
-      console.log(`${socket.user.username} disconnected from room: ${currentRoom}`);
+      console.log(
+        `${socket.user.username} disconnected from room: ${currentRoom}`
+      );
     });
   } catch (error) {
     console.error("Token verification failed:", error.message);
