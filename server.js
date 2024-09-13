@@ -47,7 +47,7 @@ wss.on("connection", (socket, req) => {
   try {
     // Verify the token
     const decoded = jwt.verify(token, "your_jwt_secret");
-    socket.user = { id: decoded.id, username: decoded.username };
+    socket.user = { id: decoded.id, username: decoded.username || 'Anonymous' };
 
     console.log("Client connected with user ID:", socket.user.id);
 
@@ -68,13 +68,13 @@ wss.on("connection", (socket, req) => {
       if (messageData.type === "join") {
         currentRoom = messageData.room;  // Track the current room
         socket.room = currentRoom;
-        console.log(`${socket.user.username || "Unknown user"} joined room: ${currentRoom}`);
+        console.log(`${socket.user.username || "Unknown User"} joined: ${currentRoom}`);
       } 
 
       // Broadcast message only to the current room users
       if (messageData.type === "message" && currentRoom) {
         const jsonString = JSON.stringify({
-          username: socket.user.username,
+          username: socket.user.username || 'Anonymous',
           message: messageData.message,
           room: currentRoom,
         });
