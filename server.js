@@ -74,6 +74,8 @@ wss.on("connection", (socket, req) => {
         );
       }
 
+      
+
       // Broadcast message only to the current room users
       if (messageData.type === "message" && currentRoom) {
         const jsonString = JSON.stringify({
@@ -82,6 +84,8 @@ wss.on("connection", (socket, req) => {
           room: currentRoom,
         });
 
+
+        
         // Broadcast to everyone in the same room
         wss.clients.forEach((client) => {
           if (
