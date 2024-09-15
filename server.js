@@ -74,7 +74,24 @@ wss.on("connection", (socket, req) => {
         );
       }
 
-      
+      // Handle typing events
+      if (messageData.type === "typing" && messageData.room) {
+        wss.clients.forEach((client) => {
+          if (
+            client.room === messageData.room &&
+            client.readyState === client.OPEN
+          ) {
+            client.send(
+              JSON.stringify({
+                type: "typing",
+                username: messageData.username,
+                room: messageData.room,
+                typing: messageData.typing,
+              })
+            );
+          }
+        });
+      }
 
       // Broadcast message only to the current room users
       if (messageData.type === "message" && currentRoom) {
