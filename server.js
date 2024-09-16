@@ -33,7 +33,7 @@ const server = app.listen(3000, () => {
 // WebSocket server
 const wss = new Server({ server, path: "/ws" });
 
-// Keep track of clients in each room
+// Keep track of clients in each room, for user list
 const rooms = {};
 
 wss.on("connection", (socket, req) => {
@@ -53,6 +53,19 @@ wss.on("connection", (socket, req) => {
 
     // Store the room the user joins
     let currentRoom = null;
+
+    const broadcastUserList = (room) => {
+      const usersInRoom = Array.from(wss.clients)
+        .filter((client) => client.room === room)
+        .map((client) => client.user.username);
+
+      // Send updated user list to all clients in the room
+      wss.clients.forEach((client) => {
+        if (client.room === room && client.readyState === client.OPEN) {
+          client.send(JSON.stringify({ type: 'userListUpdate', users: usersInRoom }));
+        }
+      });
+    };
 
     socket.on("message", (message) => {
       let messageData;
