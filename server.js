@@ -132,6 +132,7 @@ wss.on("connection", (socket, req) => {
     });
 
     socket.on("close", () => {
+      broadcastUserList(currentRoom);
       console.log(
         `${socket.user.username} disconnected from room: ${currentRoom}`
       );
