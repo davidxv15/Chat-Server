@@ -82,6 +82,9 @@ wss.on("connection", (socket, req) => {
         currentRoom = messageData.room; // Track the current room
         socket.room = currentRoom;
         socket.user.username = messageData.username;
+
+          //add user to room and broadcast updated list
+        broadcastUserList(currentRoom);
         console.log(
           `${socket.user.username || "Unknown User"} joined: ${currentRoom}`
         );
