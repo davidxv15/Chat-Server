@@ -64,7 +64,8 @@ wss.on("connection", (socket, req) => {
   try {
     // Verify the token
     const decoded = jwt.verify(token, "your_jwt_secret");
-    socket.user = { id: decoded.id, username: decoded.username || "Anonymous" };
+    socket.user = { id: decoded.id, username: decoded.username || socket.user.username || "Anonymous" };
+
 
     console.log("Client connected with user ID:", socket.user.id);
 
@@ -146,7 +147,6 @@ wss.on("connection", (socket, req) => {
 
     socket.on("close", () => {
         // Remove the user from all rooms they have visited when they disconnect
-        socket.on("close", () => {
           socket.userRooms.forEach((room) => {
             if (rooms[room]) {
               rooms[room] = rooms[room].filter(
