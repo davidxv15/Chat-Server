@@ -82,22 +82,24 @@ wss.on("connection", (socket, req) => {
 
       // Handle room joining
       if (messageData.type === "join") {
-        currentRoom = messageData.room; // Track the current room
-        socket.room = currentRoom;
-        socket.user.username = messageData.username;
+        const room = messageData.room;
 
-         // no duplicate users in the room
-         if (!rooms[currentRoom]) {
-          rooms[currentRoom] = [];
+        // Add user to the room if not already present
+        if (!rooms[room]) {
+          rooms[room] = [];
         }
 
-         // Only add the user if they are not already in the room
-        if (!rooms[currentRoom].includes(socket.user.username)) {
-          rooms[currentRoom].push(socket.user.username);
+        if (!rooms[room].includes(socket.user.username)) {
+          rooms[room].push(socket.user.username);
         }
 
-        // Broadcast updated user list
-        broadcastUserList(currentRoom);
+        // Track the room the user joined
+        if (!socket.userRooms.includes(room)) {
+          socket.userRooms.push(room);
+        }
+
+        // Broadcast the updated user list
+        broadcastUserList(room);
       }
 
       // Handle typing events
