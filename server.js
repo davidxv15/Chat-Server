@@ -122,11 +122,12 @@ wss.on("connection", (socket, req) => {
       }
 
       // Broadcast message only to the current room users
-      if (messageData.type === "message" && currentRoom) {
+      if (messageData.type === "message" && messageData.room) {
+        const room = messageData.room;
         const jsonString = JSON.stringify({
-          username: socket.user.username || "Anonymouss",
+          username: socket.user.username || "Anonymous",
           message: messageData.message,
-          room: currentRoom,
+          room: room,
         });
 
 
