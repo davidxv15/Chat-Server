@@ -68,8 +68,7 @@ wss.on("connection", (socket, req) => {
 
     console.log("Client connected with user ID:", socket.user.id);
 
-    // Store the room the user joins
-    let currentRoom = null;
+    let currentRoom = null; // tracks user's current room
 
     socket.on("message", (message) => {
       let messageData;
@@ -92,6 +91,7 @@ wss.on("connection", (socket, req) => {
           rooms[currentRoom] = [];
         }
 
+         // Only add the user if they are not already in the room
         if (!rooms[currentRoom].includes(socket.user.username)) {
           rooms[currentRoom].push(socket.user.username);
         }
@@ -147,6 +147,11 @@ wss.on("connection", (socket, req) => {
         rooms[currentRoom] = rooms[currentRoom].filter(
           (username) => username !== socket.user.username
         );
+
+         // If the room is now empty, delete it
+         if (rooms[currentRoom].length === 0) {
+          delete rooms[currentRoom];
+        }
 
         // Broadcast updated user list to remaining clients
         broadcastUserList(currentRoom);
