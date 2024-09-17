@@ -143,12 +143,12 @@ wss.on("connection", (socket, req) => {
 
     socket.on("close", () => {
       if (currentRoom && rooms[currentRoom]) {
-        // Remove user from the room when they disconnect
+        // Remove user from room on disconnect
         rooms[currentRoom] = rooms[currentRoom].filter(
           (username) => username !== socket.user.username
         );
 
-        // Broadcast updated user list to the remaining clients
+        // Broadcast updated user list to remaining clients
         broadcastUserList(currentRoom);
 
         console.log(`${socket.user.username} disconnected from room: ${currentRoom}`);
