@@ -87,11 +87,17 @@ wss.on("connection", (socket, req) => {
         socket.room = currentRoom;
         socket.user.username = messageData.username;
 
-          //add user to room and broadcast updated list
+         // no duplicate users in the room
+         if (!rooms[currentRoom]) {
+          rooms[currentRoom] = [];
+        }
+
+        if (!rooms[currentRoom].includes(socket.user.username)) {
+          rooms[currentRoom].push(socket.user.username);
+        }
+
+        // Broadcast updated user list
         broadcastUserList(currentRoom);
-        console.log(
-          `${socket.user.username || "Unknown User"} joined: ${currentRoom}`
-        );
       }
 
       // Handle typing events
