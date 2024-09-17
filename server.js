@@ -68,7 +68,7 @@ wss.on("connection", (socket, req) => {
 
     console.log("Client connected with user ID:", socket.user.id);
 
-    let currentRoom = null; // tracks user's current room
+    socket.userRooms = [];  // tracks user's current room
 
     socket.on("message", (message) => {
       let messageData;
