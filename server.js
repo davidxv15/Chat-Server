@@ -135,7 +135,7 @@ wss.on("connection", (socket, req) => {
         // Broadcast to everyone in the same room
         wss.clients.forEach((client) => {
           if (
-            client.room === currentRoom &&
+            client.room === room &&
             client.readyState === client.OPEN
           ) {
             client.send(jsonString);
@@ -145,23 +145,22 @@ wss.on("connection", (socket, req) => {
     });
 
     socket.on("close", () => {
-      if (currentRoom && rooms[currentRoom]) {
-        // Remove user from room on disconnect
-        rooms[currentRoom] = rooms[currentRoom].filter(
-          (username) => username !== socket.user.username
-        );
-
-         // If the room is now empty, delete it
-         if (rooms[currentRoom].length === 0) {
-          delete rooms[currentRoom];
-        }
-
-        // Broadcast updated user list to remaining clients
-        broadcastUserList(currentRoom);
-
-        console.log(`${socket.user.username} disconnected from room: ${currentRoom}`);
-      }
-    });
+        // Remove the user from all rooms they have visited when they disconnect
+        socket.on("close", () => {
+          socket.userRooms.forEach((room) => {
+            if (rooms[room]) {
+              rooms[room] = rooms[room].filter(
+                (username) => username !== socket.user.username
+              );
+              
+              // Broadcast the updated user list to remaining clients in that room
+              broadcastUserList(room);
+            }
+          });
+    
+          console.log(`${socket.user.username} disconnected from all visited rooms`);
+        });
+    
   } catch (error) {
     console.error("Token verification failed:", error.message);
     socket.close(4002, "Token invalid");
