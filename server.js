@@ -98,6 +98,7 @@ wss.on("connection", (socket, req) => {
         if (!socket.userRooms.includes(room)) {
           socket.userRooms.push(room);
         }
+        console.log(`${socket.user.username || "Unknown User"} joined: ${room}`);
 
         // Broadcast the updated user list
         broadcastUserList(room);
