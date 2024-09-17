@@ -142,10 +142,17 @@ wss.on("connection", (socket, req) => {
     });
 
     socket.on("close", () => {
-      broadcastUserList(currentRoom);
-      console.log(
-        `${socket.user.username} disconnected from room: ${currentRoom}`
-      );
+      if (currentRoom && rooms[currentRoom]) {
+        // Remove user from the room when they disconnect
+        rooms[currentRoom] = rooms[currentRoom].filter(
+          (username) => username !== socket.user.username
+        );
+
+        // Broadcast updated user list to the remaining clients
+        broadcastUserList(currentRoom);
+
+        console.log(`${socket.user.username} disconnected from room: ${currentRoom}`);
+      }
     });
   } catch (error) {
     console.error("Token verification failed:", error.message);
