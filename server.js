@@ -8,10 +8,10 @@ const { protect } = require("./middleware/auth");
 require("dotenv").config();
 
 const app = express();
-app.use(express.json());
+app.use(express.json());  // Middleware to parse JSON request bodies
 
 const cors = require("cors");
-app.use(cors());
+app.use(cors()); // Enabling CORS for cross-origin requests
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -32,6 +32,27 @@ const server = app.listen(3000, () => {
 
 const wss = new Server({ server, path: "/ws" });
 
+// Keep track of clients in each room
+const rooms = {}; // { roomName: [user1, user2, ...] }
+
+// Function to broadcast the updated user list to all clients in the room
+const broadcastUserList = (room) => {
+  const updatedUserList = rooms[room] || [];
+
+  // Broadcast the updated user list to all clients in the room
+  wss.clients.forEach((client) => {
+    if (client.readyState === client.OPEN && client.room === room) {
+      client.send(
+        JSON.stringify({
+          type: "userListUpdate",
+          room: room,
+          users: updatedUserList,
+        })
+      );
+    }
+  });
+};
+
 wss.on("connection", (socket, req) => {
   // Extract the token from the URL query string
   const token = req.url.split("token=")[1];
@@ -44,8 +65,10 @@ wss.on("connection", (socket, req) => {
     // Verify the token
     const decoded = jwt.verify(token, "your_jwt_secret");
     socket.user = { id: decoded.id, username: decoded.username }; // setting to use username
-
     console.log("Client connected with user ID:", socket.user.id);
+
+    // Keep track of the rooms the user joins
+    socket.userRooms = [];
 
     socket.on("message", (message) => {
       console.log("Received:", message.toString());
