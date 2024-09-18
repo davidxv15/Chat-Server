@@ -50,7 +50,7 @@ wss.on("connection", (socket, req) => {
     socket.on("message", (message) => {
       console.log("Received:", message.toString());
 
-      // Ensure the message is a JSON string
+      // Ensure the message as a JSON string
       let messageData;
       try {
         messageData = JSON.parse(message);
