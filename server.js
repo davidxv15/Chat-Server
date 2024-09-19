@@ -41,7 +41,7 @@ const broadcastUserList = (room) => {
 
   // Broadcast the updated user list to all clients in the room
   wss.clients.forEach((client) => {
-    if (client.readyState === client.OPEN && client.room === room) {
+    if (client.readyState === client.OPEN) {
       client.send(
         JSON.stringify({
           type: "userListUpdate",
