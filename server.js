@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken"); // Import JWT library
 const authRoutes = require("./routes/auth");
 const { protect } = require("./middleware/auth");
 
+const axios = require('axios');
+
 require("dotenv").config();
 
 const app = express();
