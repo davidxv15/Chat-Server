@@ -7,6 +7,26 @@ const { protect } = require("./middleware/auth");
 
 const axios = require('axios');
 
+// POST route to verify CAPTCHA
+app.post('/verify-captcha', async (req, res) => {
+  const token = req.body.token; // This is the reCAPTCHA token from the frontend
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY; // Use your Secret Key from Google
+
+  // Make a POST request to Google to verify the token
+  const response = await axios.post(
+    `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`
+  );
+
+  const { success } = response.data;
+
+  if (success) {
+    res.status(200).json({ message: 'Verification successful' });
+  } else {
+    res.status(400).json({ message: 'reCAPTCHA verification failed' });
+  }
+});
+
+
 require("dotenv").config();
 
 const app = express();
