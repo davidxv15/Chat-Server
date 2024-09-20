@@ -131,4 +131,4 @@ wss.on("connection", (socket, req) => {
   }
 });
 
-console.log("WebSocket server is running on ws://localhost:3000");
+console.log("WebSocket server is running on ws://localhost:3001");
