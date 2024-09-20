@@ -30,25 +30,26 @@ app.use("/api/auth", authRoutes);
 app.post("/verify-captcha", async (req, res) => {
   const { token } = req.body.token;
 
+  // Verify the token with recaptcha api.
   try {
-    const response = await axios.post(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`
-    );
+    const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`;
+    const response = await axios.post(verificationUrl);
 
-    const data = response.data;
+    const { success } = response.data;
 
-    if (data.success) {
-      res.json({ success: true });
+    if (success) {
+      res.json({ message: "Verification successful" });
     } else {
-      res.status(400).json({ success: false, message: "reCAPTCHA verification failed" });
+      res.status(400).json({ message: "CAPTCHA verification failed" });
     }
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error verifying reCAPTCHA" });
+    console.error("CAPTCHA verification error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
-const server = app.listen(3000, () => {
-  console.log("Server running on port 3000");
+const server = app.listen(3001, () => {
+  console.log("Server running on port 3001");
 });
 
 const wss = new Server({ server, path: "/ws" });
