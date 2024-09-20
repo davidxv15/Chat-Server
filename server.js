@@ -28,7 +28,7 @@ db.once("open", function () {
 app.use("/api/auth", authRoutes);
 
 app.post("/verify-captcha", async (req, res) => {
-  const { token } = req.body.token;
+  const { token } = req.body;
 
   // Verify the token with recaptcha api.
   try {
