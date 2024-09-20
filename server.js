@@ -30,6 +30,10 @@ app.use("/api/auth", authRoutes);
 app.post("/verify-captcha", async (req, res) => {
   const { token } = req.body;
 
+  if (!token) {
+    return res.status(400).json({ message: "No CAPTCHA token provided" });
+  }
+
   // Verify the token with recaptcha api.
   try {
     const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`;
