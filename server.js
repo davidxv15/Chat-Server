@@ -4,28 +4,7 @@ const { Server } = require("ws"); // my WebSocket lib import
 const jwt = require("jsonwebtoken"); // Import JWT library
 const authRoutes = require("./routes/auth");
 const { protect } = require("./middleware/auth");
-
 const axios = require('axios');
-
-// POST route to verify CAPTCHA
-app.post('/verify-captcha', async (req, res) => {
-  const token = req.body.token; // This is the reCAPTCHA token from the frontend
-  const secretKey = process.env.RECAPTCHA_SECRET_KEY; // Use your Secret Key from Google
-
-  // Make a POST request to Google to verify the token
-  const response = await axios.post(
-    `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`
-  );
-
-  const { success } = response.data;
-
-  if (success) {
-    res.status(200).json({ message: 'Verification successful' });
-  } else {
-    res.status(400).json({ message: 'reCAPTCHA verification failed' });
-  }
-});
-
 
 require("dotenv").config();
 
@@ -47,6 +26,26 @@ db.once("open", function () {
 });
 
 app.use("/api/auth", authRoutes);
+
+app.post("/verify-captcha", async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    const response = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`
+    );
+
+    const data = response.data;
+
+    if (data.success) {
+      res.json({ success: true });
+    } else {
+      res.status(400).json({ success: false, message: "reCAPTCHA verification failed" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error verifying reCAPTCHA" });
+  }
+});
 
 const server = app.listen(3000, () => {
   console.log("Server running on port 3000");
