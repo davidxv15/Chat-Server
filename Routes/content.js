@@ -1,5 +1,5 @@
-import express from 'express';
-import { getEntries } from '../services/contentfulService.js';
+const express = require('express');
+const { getEntries } = require('../services/contentfulService');
 
 const router = express.Router();
 
@@ -13,4 +13,4 @@ router.get('/bulletins', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;
