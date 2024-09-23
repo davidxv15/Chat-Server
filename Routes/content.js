@@ -1,10 +1,9 @@
-// routes/content.js
 import express from 'express';
 import { getEntries } from '../services/contentfulService.js';
 
 const router = express.Router();
 
-// Route to get bulletin messages
+//get bulletin messages
 router.get('/bulletins', async (req, res) => {
   try {
     const entries = await getEntries('bulletin'); // 'bulletin' as the content type
