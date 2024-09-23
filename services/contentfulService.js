@@ -1,4 +1,4 @@
-import { createClient } from 'contentful';
+const { createClient } = require('contentful');
 
 // creates content client instance
 const client = createClient({
