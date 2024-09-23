@@ -7,7 +7,7 @@ const client = createClient({
 });
 
 // fetches contentful entries
-export const getEntries = async (contentType) => {
+const getEntries = async (contentType) => {
     try {
       const response = await client.getEntries({
         content_type: contentType, // 'bulletin' or any content type
@@ -19,3 +19,6 @@ export const getEntries = async (contentType) => {
     }
   };
   
+module.exports = {
+    getEntries
+};
