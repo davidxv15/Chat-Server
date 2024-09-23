@@ -1,9 +1,8 @@
-// contentfulService.js
 import { createClient } from 'contentful';
 
 const client = createClient({
-  space: process.env.CONTENTFUL_SPACE_ID, // Add this in your .env file
-  accessToken: process.env.CONTENTFUL_ACCESS_TOKEN, // Add this in your .env file
+  space: process.env.CONTENTFUL_SPACE_ID, // .env file
+  accessToken: process.env.CONTENTFUL_ACCESS_TOKEN, // .env file
 });
 
 export const fetchBulletinContent = async () => {
