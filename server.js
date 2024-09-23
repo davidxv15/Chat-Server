@@ -4,12 +4,12 @@ const { Server } = require("ws"); // my WebSocket lib import
 const jwt = require("jsonwebtoken"); // Import JWT library
 const authRoutes = require("./routes/auth");
 const { protect } = require("./middleware/auth");
-const axios = require('axios');
+const axios = require("axios");
 
 require("dotenv").config();
 
 const app = express();
-app.use(express.json());  // Middleware to parse JSON request bodies
+app.use(express.json()); // Middleware to parse JSON request bodies
 
 const cors = require("cors");
 app.use(cors()); // Enabling CORS for cross-origin requests
@@ -100,7 +100,7 @@ wss.on("connection", (socket, req) => {
       console.log("Received:", message.toString());
       // Ensure the message as a JSON string
       let messageData;
-      
+
       try {
         messageData = JSON.parse(message);
       } catch (e) {
