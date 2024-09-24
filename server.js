@@ -33,6 +33,11 @@ app.use("/api/content", contentRoutes);
 app.post("/verify-captcha", async (req, res) => {
   const { token } = req.body;
 
+  console.log("Space ID:", process.env.CONTENTFUL_SPACE_ID);
+console.log("Access Token:", process.env.CONTENTFUL_ACCESS_TOKEN);
+console.log("JWT Secret:", process.env.JWT_SECRET);
+
+
   if (!token) {
     return res.status(400).json({ message: "No CAPTCHA token provided" });
   }
@@ -134,8 +139,6 @@ wss.on("connection", (socket, req) => {
   }
 });
 
-console.log("Space ID:", process.env.CONTENTFUL_SPACE_ID);
-console.log("Access Token:", process.env.CONTENTFUL_ACCESS_TOKEN);
 
 
 console.log("WebSocket server is running on ws://localhost:3001");
