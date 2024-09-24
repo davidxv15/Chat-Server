@@ -27,8 +27,10 @@ db.once("open", function () {
 });
 
 app.use("/api/auth", authRoutes);
+console.log("/api/auth routes initialized");
 
 app.use("/api/content", contentRoutes); 
+console.log("/api/content routes initialized");
 
 app.post("/verify-captcha", async (req, res) => {
   const { token } = req.body;
