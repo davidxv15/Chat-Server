@@ -92,7 +92,7 @@ wss.on("connection", (socket, req) => {
 
   try {
     // Verify the token
-    const decoded = jwt.verify(token, "your_jwt_secret");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     socket.user = { id: decoded.id, username: decoded.username }; // setting to use username
     console.log("Client connected with user ID:", socket.user.id);
 
