@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const { Server } = require("ws"); // my WebSocket lib import
 const jwt = require("jsonwebtoken"); // Import JWT library
 const authRoutes = require("./routes/auth");
-const contentRoutes = require("./Routes/content")
+// const contentRoutes = require("./Routes/content")
 const { protect } = require("./middleware/auth");
 const axios = require("axios");
 
@@ -29,8 +29,13 @@ db.once("open", function () {
 app.use("/api/auth", authRoutes);
 console.log("/api/auth routes initialized");
 
-app.use("/api/content", contentRoutes); 
-console.log("/api/content routes initialized");
+// app.use("/api/content", contentRoutes); 
+// console.log("/api/content routes initialized");
+// Test route to ensure the server is running
+app.get('/api/test', (req, res) => {
+  res.json({ message: "Server is working!" });
+});
+
 
 app.post("/verify-captcha", async (req, res) => {
   const { token } = req.body;
