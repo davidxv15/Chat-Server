@@ -6,6 +6,12 @@ const client = createClient({
   accessToken: process.env.CONTENTFUL_ACCESS_TOKEN, // .env file
 });
 
+// Test connection
+client.getSpace()
+  .then((space) => console.log('Connected to space:', space.name))
+  .catch((err) => console.error('Error connecting to space:', err));
+
+
 // fetches contentful entries
 const getEntries = async (contentType) => {
     try {
@@ -19,6 +25,9 @@ const getEntries = async (contentType) => {
     }
   };
   
+  console.log('Space ID:', process.env.CONTENTFUL_SPACE_ID);
+console.log('Access Token:', process.env.CONTENTFUL_ACCESS_TOKEN);
+
 module.exports = {
     getEntries
 };

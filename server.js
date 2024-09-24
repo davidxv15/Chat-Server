@@ -134,4 +134,8 @@ wss.on("connection", (socket, req) => {
   }
 });
 
+console.log("Space ID:", process.env.CONTENTFUL_SPACE_ID);
+console.log("Access Token:", process.env.CONTENTFUL_ACCESS_TOKEN);
+
+
 console.log("WebSocket server is running on ws://localhost:3001");
