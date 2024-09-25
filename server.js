@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const { Server } = require("ws"); // my WebSocket lib import
 const jwt = require("jsonwebtoken"); // Import JWT library
-const authRoutes = require("./routes/auth");
+const authRoutes = require("./Routes/auth");
 // const contentRoutes = require("./Routes/content")
 const { protect } = require("./middleware/auth");
 const axios = require("axios");
@@ -40,7 +40,7 @@ app.get('/api/test', (req, res) => {
 app.post("/verify-captcha", async (req, res) => {
   const { token } = req.body;
 
-  console.log("Space ID:", process.env.CONTENTFUL_SPACE_ID);
+console.log("Space ID:", process.env.CONTENTFUL_SPACE_ID);
 console.log("Access Token:", process.env.CONTENTFUL_ACCESS_TOKEN);
 console.log("JWT Secret:", process.env.JWT_SECRET);
 
