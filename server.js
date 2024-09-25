@@ -8,6 +8,8 @@ const { protect } = require("./middleware/auth");
 const axios = require("axios");
 
 require("dotenv").config();
+console.log("Space ID:", process.env.CONTENTFUL_SPACE_ID);
+console.log("Access Token:", process.env.CONTENTFUL_ACCESS_TOKEN);
 
 const app = express();
 app.use(express.json()); // Middleware to parse JSON request bodies
@@ -40,8 +42,6 @@ app.get('/api/test', (req, res) => {
 app.post("/verify-captcha", async (req, res) => {
   const { token } = req.body;
 
-console.log("Space ID:", process.env.CONTENTFUL_SPACE_ID);
-console.log("Access Token:", process.env.CONTENTFUL_ACCESS_TOKEN);
 console.log("JWT Secret:", process.env.JWT_SECRET);
 
 
