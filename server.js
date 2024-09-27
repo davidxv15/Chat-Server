@@ -31,19 +31,17 @@ db.once("open", function () {
 app.use("/api/auth", authRoutes);
 console.log("/api/auth routes initialized");
 
-// app.use("/api/content", contentRoutes); 
+// app.use("/api/content", contentRoutes);
 // console.log("/api/content routes initialized");
 // Test route to ensure the server is running
-app.get('/api/test', (req, res) => {
+app.get("/api/test", (req, res) => {
   res.json({ message: "Server is working!" });
 });
-
 
 app.post("/verify-captcha", async (req, res) => {
   const { token } = req.body;
 
-console.log("JWT Secret:", process.env.JWT_SECRET);
-
+  console.log("JWT Secret:", process.env.JWT_SECRET);
 
   if (!token) {
     return res.status(400).json({ message: "No CAPTCHA token provided" });
@@ -145,7 +143,5 @@ wss.on("connection", (socket, req) => {
     socket.close(4002, "Token invalid");
   }
 });
-
-
 
 console.log("WebSocket server is running on ws://localhost:3001");
