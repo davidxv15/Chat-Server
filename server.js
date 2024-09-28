@@ -147,8 +147,12 @@ wss.on("connection", (socket, req) => {
       console.error("WebSocket error:", error);
     });
 
-    socket.on("close", (code, reason) => {
-      console.log(`Client disconnected (code: ${code}, reason: ${reason})`);
+    socket.on("close", () => {
+      socket.userRooms.forEach((room) => {
+        rooms[room] = rooms[room].filter(user => user !== socket.user.username);
+        broadcastUserList(room);
+      });
+      console.log(`Client disconnected (ID: ${socket.user.id})`);
     });
   } catch (error) {
     console.error("Token verification failed:", error.message);
