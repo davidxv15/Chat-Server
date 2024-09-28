@@ -113,12 +113,24 @@ wss.on("connection", (socket, req) => {
       console.log("Received:", message.toString());
       // Ensure the message as a JSON string
       let messageData;
-
       try {
         messageData = JSON.parse(message);
       } catch (e) {
         console.error("Message is not JSON, sending as string:", message);
         messageData = { username: socket.user.username, message };
+      }
+
+      if (messageData.type === "join") {
+        const { room, username } = messageData;
+
+        // Add user to the room if not already in it
+        if (!rooms[room]) rooms[room] = [];
+        if (!rooms[room].includes(username)) {
+          rooms[room].push(username);
+          broadcastUserList(room);
+        }
+
+        socket.userRooms.push(room);
       }
 
       const jsonString = JSON.stringify(messageData);
