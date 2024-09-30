@@ -149,7 +149,9 @@ wss.on("connection", (socket, req) => {
 
     socket.on("close", () => {
       socket.userRooms.forEach((room) => {
-        rooms[room] = rooms[room].filter(user => user !== socket.user.username);
+        rooms[room] = rooms[room].filter(
+          (user) => user !== socket.user.username
+        );
         broadcastUserList(room);
       });
       console.log(`Client disconnected (ID: ${socket.user.id})`);
