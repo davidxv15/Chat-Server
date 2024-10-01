@@ -151,6 +151,7 @@ wss.on("connection", (socket, req) => {
     });
 
     socket.on("close", () => {
+      //remove user from all rooms visisted
       socket.userRooms.forEach((room) => {
         rooms[room] = rooms[room].filter(
           (user) => user !== socket.user.username
