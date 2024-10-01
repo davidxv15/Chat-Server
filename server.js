@@ -134,7 +134,6 @@ wss.on("connection", (socket, req) => {
       }
 
       const jsonString = JSON.stringify(messageData);
-
       // Broadcast the JSONmessage to ALL clients. think 'open back and forth'
       wss.clients.forEach((client) => {
         if (client.readyState === client.OPEN) {
