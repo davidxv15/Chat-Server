@@ -130,7 +130,11 @@ wss.on("connection", (socket, req) => {
           broadcastUserList(room);
         }
 
-        socket.userRooms.push(room);
+        socket.userRooms.push(room); // Track rooms user is in
+      } else if (messageData.type === "leave") {
+        const { room, username } = messageData;
+        rooms[room] = rooms[room].filter((user) => user !== username);
+        broadcastUserList(room);
       }
 
       const jsonString = JSON.stringify(messageData);
