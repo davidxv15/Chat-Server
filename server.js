@@ -91,6 +91,15 @@ const broadcastUserList = (room) => {
   });
 };
 
+// Function to broadcast a new message to all clients in a room
+const broadcastMessage = (room, messageData) => {
+  wss.clients.forEach((client) => {
+    if (client.readyState === client.OPEN) {
+      client.send(JSON.stringify(messageData));
+    }
+  });
+};
+
 wss.on("connection", (socket, req) => {
   // Extract the token from the URL query string
   const token = req.url.split("token=")[1];
