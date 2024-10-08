@@ -41,7 +41,6 @@ app.get("/api/test", (req, res) => {
 
 app.post("/verify-captcha", async (req, res) => {
   const { token } = req.body;
-
   console.log("JWT Secret:", process.env.JWT_SECRET);
 
   if (!token) {
