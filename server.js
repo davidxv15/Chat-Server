@@ -143,7 +143,21 @@ wss.on("connection", (socket, req) => {
         const { room, username } = messageData;
         rooms[room] = rooms[room].filter((user) => user !== username);
         broadcastUserList(room);
+      } else if (messageData.type === "message") {
+        const { room, username, message, timestamp } = messageData;
+
+        // Save the message to the database
+        const newMessage = new Message({
+          room,
+          username,
+          message,
+          timestamp,
+        });
+        await newMessage.save();
+
+        broadcastMessage(room, messageData); // Broadcast message to all clients
       }
+
 
       const jsonString = JSON.stringify(messageData);
       // Broadcast the JSONmessage to ALL clients. think 'open back and forth'
