@@ -100,6 +100,19 @@ const broadcastMessage = (room, messageData) => {
   });
 };
 
+// Get all messages for a specific room
+app.get('/api/messages/:room', async (req, res) => {
+  const { room } = req.params;
+  try {
+    const messages = await Message.find({ room });
+    res.json(messages);
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
 wss.on("connection", (socket, req) => {
   // Extract the token from the URL query string
   const token = req.url.split("token=")[1];
