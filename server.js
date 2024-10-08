@@ -190,4 +190,18 @@ wss.on("connection", (socket, req) => {
   }
 });
 
+// Route to delete all messages for a user
+app.delete("/api/messages/:username", async (req, res) => {
+  const username = req.params.username;
+
+  try {
+    await Message.deleteMany({ username }); // Delete all messages by the user
+    res.status(200).json({ message: "Messages deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting messages:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
 console.log("WebSocket server is running on ws://localhost:3001");
