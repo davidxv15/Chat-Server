@@ -158,7 +158,8 @@ wss.on("connection", (socket, req) => {
         broadcastMessage(room, messageData); // Broadcast message to all clients
       }
 
-
+      // Broadcast other types of events like typing indicators, but not messages
+  if (messageData.type !== "message") {
       const jsonString = JSON.stringify(messageData);
       // Broadcast the JSONmessage to ALL clients. think 'open back and forth'
       wss.clients.forEach((client) => {
@@ -166,6 +167,7 @@ wss.on("connection", (socket, req) => {
           client.send(jsonString); // Send the message as it was received (already JSON-stringified)
         }
       });
+    }
     });
 
     socket.on("error", (error) => {
