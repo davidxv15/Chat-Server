@@ -117,7 +117,7 @@ wss.on("connection", (socket, req) => {
     // Keep track of the rooms the user joins
     socket.userRooms = [];
 
-    socket.on("message", (message) => {
+    socket.on("message", async (message) => {
       console.log("Received:", message.toString());
       // Ensure the message as a JSON string
       let messageData;
