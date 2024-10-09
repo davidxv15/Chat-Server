@@ -187,14 +187,27 @@ wss.on("connection", (socket, req) => {
       console.error("WebSocket error:", error);
     });
 
-    socket.on("close", () => {
-      //remove user from all rooms visisted
+    socket.on("close", async () => {
+      wss.clients.forEach((client) => {
+        if (client.readyState === client.OPEN) {
+          client.send(
+            JSON.stringify({
+              type: "userLoggedOut",
+              username: socket.user.username, // Send the logged-out username
+            })
+          );
+        }
+      });
+
       socket.userRooms.forEach((room) => {
         rooms[room] = rooms[room].filter(
           (user) => user !== socket.user.username
         );
         broadcastUserList(room);
       });
+
+      await Message.deleteMany({ username: socket.user.username }); // Delete messages on disconnect
+
       console.log(`Client disconnected (ID: ${socket.user.id})`);
     });
   } catch (error) {
