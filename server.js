@@ -6,7 +6,7 @@ const authRoutes = require("./Routes/auth");
 // const contentRoutes = require("./Routes/content")
 const { protect } = require("./middleware/auth");
 const axios = require("axios");
-const Message = require("./models/Message"); 
+const Message = require("./models/Message");
 
 require("dotenv").config();
 console.log("Space ID:", process.env.CONTENTFUL_SPACE_ID);
@@ -101,7 +101,7 @@ const broadcastMessage = (room, messageData) => {
 };
 
 // Get all messages for a specific room
-app.get('/api/messages/:room', async (req, res) => {
+app.get("/api/messages/:room", async (req, res) => {
   const { room } = req.params;
   try {
     const messages = await Message.find({ room });
@@ -111,7 +111,6 @@ app.get('/api/messages/:room', async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 
 wss.on("connection", (socket, req) => {
   // Extract the token from the URL query string
@@ -172,15 +171,15 @@ wss.on("connection", (socket, req) => {
       }
 
       // Broadcast other types of events like typing indicators, but not messages
-  if (messageData.type !== "message") {
-      const jsonString = JSON.stringify(messageData);
-      // Broadcast the JSONmessage to ALL clients. think 'open back and forth'
-      wss.clients.forEach((client) => {
-        if (client.readyState === client.OPEN) {
-          client.send(jsonString); // Send the message as it was received (already JSON-stringified)
-        }
-      });
-    }
+      if (messageData.type !== "message") {
+        const jsonString = JSON.stringify(messageData);
+        // Broadcast the JSONmessage to ALL clients. think 'open back and forth'
+        wss.clients.forEach((client) => {
+          if (client.readyState === client.OPEN) {
+            client.send(jsonString); // Send the message as it was received (already JSON-stringified)
+          }
+        });
+      }
     });
 
     socket.on("error", (error) => {
@@ -228,6 +227,5 @@ app.delete("/api/messages/:username", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 
 console.log("WebSocket server is running on ws://localhost:3001");
