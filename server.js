@@ -18,19 +18,20 @@ app.use(express.json()); // Middleware to parse JSON request bodies
 const cors = require("cors");
 const allowedOrigins = [
   "http://localhost:3003", // Development URL
-  "https://your-production-url.com" // Replace with your production URL
+  "https://your-production-url.com", // Replace with your production URL
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  }
-}));
-
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
