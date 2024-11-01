@@ -15,7 +15,9 @@ console.log("Access Token:", process.env.CONTENTFUL_ACCESS_TOKEN);
 const app = express();
 app.use(express.json()); // Middleware to parse JSON request bodies
 
+
 const cors = require("cors");
+
 const allowedOrigins = [
   "http://localhost:3003", // Development URL
   "https://your-production-url.com", // Replace with your production URL
