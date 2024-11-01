@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const { Server } = require("ws"); // my WebSocket lib import
 const jwt = require("jsonwebtoken"); // JWT library
 
-const authRoutes = require("./Routes/auth");
+const authRoutes = require("./routes/authRoutes");
 
 // const contentRoutes = require("./Routes/content")
 const { protect } = require("./middleware/auth");
