@@ -22,7 +22,7 @@ const cors = require("cors");
 
 const allowedOrigins = [
   "http://localhost:3003", // Development URL
-  "https://your-production-url.com", // Replace with your production URL
+  "https://sheltered-ocean-88159.herokuapp.com" // Replace with your production URL
 ];
 
 app.use(
@@ -83,8 +83,9 @@ app.post("/verify-captcha", async (req, res) => {
   }
 });
 
-const server = app.listen(3001, () => {
-  console.log("Server running on port 3001");
+const PORT = process.env.PORT || 3001;
+const server = app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 const wss = new Server({ server, path: "/ws" });
