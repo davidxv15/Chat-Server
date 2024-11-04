@@ -57,6 +57,11 @@ app.get("/api/test", (req, res) => {
   res.json({ message: "Server is working!" });
 });
 
+app.get("/", (req, res) => {
+  res.send("Welcome to the Chat App! Server is running.");
+});
+
+
 app.post("/verify-captcha", async (req, res) => {
   const { token } = req.body;
   console.log("JWT Secret:", process.env.JWT_SECRET);
