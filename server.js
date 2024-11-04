@@ -21,7 +21,7 @@ const cors = require("cors");
 
 const allowedOrigins = [
   "http://localhost:3003", // Development URL
-  "https://sheltered-ocean-88159.herokuapp.com", // Replace with your production URL
+  "https://sheltered-ocean-88159.herokuapp.com", // Heroku
 ];
 
 app.use(
