@@ -21,6 +21,7 @@ const cors = require("cors");
 
 const allowedOrigins = [
   "http://localhost:3003", // Development URL
+  "https://capable-selkie-5113d6.netlify.app", // Netlify 
   "https://sheltered-ocean-88159.herokuapp.com", // Heroku
 ];
 
