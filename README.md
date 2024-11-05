@@ -1,8 +1,8 @@
 # Chat-Server
-Real-Time Chat Application Backend
+Real-Time Chat Application Backend  
 This repository contains the backend server for the Real-Time Chat Application. It is built with Node.js, Express, and MongoDB and uses WebSocket for real-time chat functionality.
 
-How the Backend Works
+How the Backend Works  
 The backend handles:
 
 User Authentication: Register, login, and logout functionalities.
@@ -26,16 +26,10 @@ JWT: Used for secure user authentication and session management.
 Bcrypt: Ensures secure password hashing.
 reCAPTCHA: Verifies user registrations to prevent spam.
 How to Run Locally
-Clone the repository:
-
-bash
-Copy code
+Clone the repository:  
 git clone https://github.com/yourusername/chat-app-backend.git
 cd chat-app-backend
-Install dependencies:
-
-bash
-Copy code
+Install dependencies:  
 npm install
 Environment Setup: Create a .env file in the project root with the following variables:
 
