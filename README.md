@@ -1,9 +1,9 @@
 # Chat-Server
+
 Real-Time Chat Application Backend  
 This repository contains the backend server for the Real-Time Chat Application. It is built with Node.js, Express, and MongoDB and uses WebSocket for real-time chat functionality.
 
 How the Backend Works
-
 
 The backend handles:  
 User Authentication: Register, login, and logout functionalities.
