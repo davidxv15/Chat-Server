@@ -5,8 +5,7 @@ This repository contains the backend server for the Real-Time Chat Application. 
 How the Backend Works
 
 
-The backend handles:
-
+The backend handles:  
 User Authentication: Register, login, and logout functionalities.
 Message Storage: Saves and retrieves messages per chat room in MongoDB.
 Real-Time Messaging: Manages WebSocket connections to enable live chat.
