@@ -38,8 +38,9 @@ git clone https://github.com/yourusername/chat-app-backend.git
 cd chat-app-backend  
 Install dependencies:    
 npm install  
-Environment Setup: Create a .env file in the project root with the following variables:  
 
+
+Environment Setup: Create a .env file in the project root with the following variables:  
 MONGO_URI=your_mongodb_uri  
 JWT_SECRET=your_jwt_secret  
 PORT=3001  
@@ -50,32 +51,22 @@ node server.js
 The server will start on http://localhost:3001.  
 
 
-API Endpoints
-Authentication:
+WebSocket:  
+ws://your-backend-url/ws?token=your-jwt-token: Endpoint for WebSocket connections.  
+Deployment  
 
-POST /api/auth/register: Register a new user.
-POST /api/auth/login: Login an existing user.
-POST /verify-captcha: CAPTCHA verification endpoint.
-Messages:
-
-GET /api/messages/:room: Retrieve messages for a specific room.
-DELETE /api/messages/:username: Delete all messages from a specific user.
-WebSocket:
-
-ws://your-backend-url/ws?token=your-jwt-token: Endpoint for WebSocket connections.
-Deployment
 The backend is deployed on Heroku. It connects to a MongoDB Atlas database and interfaces with the frontend on Netlify. You can access the app via the frontend at:
 
-Frontend URL: https://capable-selkie-5113d6.netlify.app/
+Frontend URL: https://capable-selkie-5113d6.netlify.app/  
 
-Security and CORS
+Security and CORS  
 CORS is configured to allow requests from:
 
 Local Development: http://localhost:3003
-Production: The deployed Netlify frontend and backend URLs.
-Future Improvements
-Enhanced User Status: Show live online/offline indicators for each user.
-Admin Room Management: Allow admins to create and manage rooms directly from the app.
-Performance Optimizations: Scale the app to handle more users and messages smoothly.
-Use Case
+Production: The deployed Netlify frontend and backend URLs.  
+Future Improvements  
+Enhanced User Status: Show live online/offline indicators for each user.  
+Admin Room Management: Allow admins to create and manage rooms directly from the app.  
+Performance Optimizations: Scale the app to handle more users and messages smoothly.  
+Use Case  
 The backend of this project supports a lightweight, real-time chat system, ideal for workplace communication. It handles user management, session control, and ensures security through JWT authentication and CAPTCHA verification.
