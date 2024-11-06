@@ -14,21 +14,23 @@ CAPTCHA Verification: Protects the app from bot interactions at registration.
 
 
 **Key Features**  
-User Authentication: Secured by JWT, all users must log in to access chat rooms.
-Real-Time WebSocket Connections: Manages message flow and user presence in real time.
-Room-Specific Messaging: Each chat room functions independently, with messages stored and accessed per room.
-Inactivity Handling: Automatic logout and session cleanup for inactive users.
-CAPTCHA Integration: Adds security to registration by verifying CAPTCHA responses.
-Technologies Used
-Backend:
-Node.js & Express.js: Frameworks for handling server-side logic and API requests.
-MongoDB & Mongoose: Stores user data, messages, and session information.
-WebSocket: Manages two-way communication for real-time messaging.
-Security:
-JWT: Used for secure user authentication and session management.
-Bcrypt: Ensures secure password hashing.
-reCAPTCHA: Verifies user registrations to prevent spam.
-How to Run Locally
+User Authentication: Secured by JWT, all users must log in to access chat rooms.  
+Real-Time WebSocket Connections: Manages message flow and user presence in real time.  
+Room-Specific Messaging: Each chat room functions independently, with messages stored and accessed per room.  
+Inactivity Handling: Automatic logout and session cleanup for inactive users.  
+CAPTCHA Integration: Adds security to registration by verifying CAPTCHA responses.  
+
+
+**Technologies Used**  
+Backend:  
+Node.js & Express.js: Frameworks for handling server-side logic and API requests.  
+MongoDB & Mongoose: Stores user data, messages, and session information.  
+WebSocket: Manages two-way communication for real-time messaging.  
+Security:  
+JWT: Used for secure user authentication and session management.  
+Bcrypt: Ensures secure password hashing.  
+reCAPTCHA: Verifies user registrations to prevent spam.  
+How to Run Locally  
 Clone the repository:  
 git clone https://github.com/yourusername/chat-app-backend.git
 cd chat-app-backend
