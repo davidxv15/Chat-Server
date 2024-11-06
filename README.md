@@ -30,26 +30,25 @@ Security:
 JWT: Used for secure user authentication and session management.  
 Bcrypt: Ensures secure password hashing.  
 reCAPTCHA: Verifies user registrations to prevent spam.  
+
+
 How to Run Locally  
 Clone the repository:  
-git clone https://github.com/yourusername/chat-app-backend.git
-cd chat-app-backend
-Install dependencies:  
-npm install
-Environment Setup: Create a .env file in the project root with the following variables:
+git clone https://github.com/yourusername/chat-app-backend.git  
+cd chat-app-backend  
+Install dependencies:    
+npm install  
+Environment Setup: Create a .env file in the project root with the following variables:  
 
-plaintext
-Copy code
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_jwt_secret
-PORT=3001
-RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key
-Run the server:
+MONGO_URI=your_mongodb_uri  
+JWT_SECRET=your_jwt_secret  
+PORT=3001  
+RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key  
+Run the server:  
 
-bash
-Copy code
-node server.js
-The server will start on http://localhost:3001.
+node server.js  
+The server will start on http://localhost:3001.  
+
 
 API Endpoints
 Authentication:
