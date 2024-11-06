@@ -13,7 +13,7 @@ Room Management: Supports room-based conversations and lists active users.
 CAPTCHA Verification: Protects the app from bot interactions at registration.  
 
 
-**Key Features**
+**Key Features**  
 User Authentication: Secured by JWT, all users must log in to access chat rooms.
 Real-Time WebSocket Connections: Manages message flow and user presence in real time.
 Room-Specific Messaging: Each chat room functions independently, with messages stored and accessed per room.
