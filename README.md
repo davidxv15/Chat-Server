@@ -34,7 +34,7 @@ reCAPTCHA: Verifies user registrations to prevent spam.
 
 How to Run Locally  
 Clone the repository:  
-git clone https://github.com/yourusername/chat-app-backend.git  
+git clone https://github.com/davidxv15/Chat-Server.git
 cd chat-app-backend  
 Install dependencies:    
 npm install  
