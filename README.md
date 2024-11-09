@@ -38,7 +38,8 @@ git clone https://github.com/davidxv15/Chat-Server.git
 cd chat-app-backend  
 2. Install dependencies:    
 npm install  
-3. Environment Setup: Create a .env file in the project root with the following variables:  
+3. Environment Setup:  
+Create a .env file in the project root with the following variables:  
 MONGO_URI=your_mongodb_uri  
 JWT_SECRET=your_jwt_secret  
 PORT=3001  
