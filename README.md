@@ -32,7 +32,7 @@ Bcrypt: Ensures secure password hashing.
 reCAPTCHA: Verifies user registrations to prevent spam.  
 
 
-How to Run Locally  
+**How to Run Locally**  
 1. Clone the repository:  
 git clone https://github.com/davidxv15/Chat-Server.git  
 cd chat-app-backend  
