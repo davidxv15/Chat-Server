@@ -19,11 +19,11 @@ The backend handles:
 * CAPTCHA Integration: Adds security to registration by verifying CAPTCHA responses.
 
 **Technologies Used**  
-Backend:  
+### Backend:  
 * Node.js & Express.js: Frameworks for handling server-side logic and API requests.  
 * MongoDB & Mongoose: Stores user data, messages, and session information.  
 * WebSocket: Manages two-way communication for real-time messaging.  
-Security:  
+### Security:  
 * JWT: Used for secure user authentication and session management.  
 * Bcrypt: Ensures secure password hashing.  
 * reCAPTCHA: Verifies user registrations to prevent spam.
@@ -45,21 +45,20 @@ Security:
    node server.js  
    The server will start on http://localhost:3001.
 
-WebSocket:  
-
-ws://https://sheltered-ocean-88159-0aef28cb17ba.herokuapp.com/ws/ws?token=your-jwt-token: Endpoint for WebSocket connections.  
-Deployment:  
-The backend is deployed on Heroku. It connects to a MongoDB Atlas database and interfaces with the frontend on Netlify. You can access the app via the frontend at:
-
+### WebSocket:  
+To establish a WebSocket connection, use the following endpoint, replacing your-jwt-token with a valid JWT token:  
+ws://https://sheltered-ocean-88159-0aef28cb17ba.herokuapp.com/ws/ws?token=your-jwt-token
+### Deployment:  
+The backend is deployed on Heroku. It connects to a MongoDB Atlas database and interfaces with the frontend on Netlify. You can access the app via the frontend at:  
 Frontend URL: https://capable-selkie-5113d6.netlify.app/
 
-Security and CORS:  
+### Security and CORS:  
 
 
 CORS is configured to allow requests from:  
 * Local Development: http://localhost:3003
-* Production Frontend:
-* Production Backend: 
+* Production Frontend: https://capable-selkie-5113d6.netlify.app
+* Production Backend: https://sheltered-ocean-88159-0aef28cb17ba.herokuapp.com
 
 
 Future Improvements:  
@@ -68,5 +67,5 @@ Future Improvements:
 * Performance Optimizations: Scale the app to handle more users and messages smoothly.  
 
 
-Use Case:  
+### Use Case:  
 The backend of this project supports a lightweight, real-time chat system, ideal for workplace communication. It handles user management, session control, and ensures security through JWT authentication and CAPTCHA verification.
