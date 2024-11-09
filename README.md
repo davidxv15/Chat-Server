@@ -52,9 +52,8 @@ The server will start on http://localhost:3001.
 
 
 WebSocket:  
-ws://your-backend-url/ws?token=your-jwt-token: Endpoint for WebSocket connections.  
+ws://your-backend-url/ws?token=your-jwt-token: Endpoint for WebSocket connections.    
 Deployment  
-
 The backend is deployed on Heroku. It connects to a MongoDB Atlas database and interfaces with the frontend on Netlify. You can access the app via the frontend at:
 
 Frontend URL: https://capable-selkie-5113d6.netlify.app/  
