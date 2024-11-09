@@ -23,6 +23,7 @@ This repository contains the backend server for the Real-Time Chat Application. 
 * Node.js & Express.js: Frameworks for handling server-side logic and API requests.  
 * MongoDB & Mongoose: Stores user data, messages, and session information.  
 * WebSocket: Manages two-way communication for real-time messaging.  
+
 **Security:**  
 * JWT: Used for secure user authentication and session management.  
 * Bcrypt: Ensures secure password hashing.  
