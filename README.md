@@ -56,8 +56,7 @@ The backend is deployed on Heroku. It connects to a MongoDB Atlas database and i
 Frontend URL: https://capable-selkie-5113d6.netlify.app/  
 
 Security and CORS:  
-CORS is configured to allow requests from:
-
+CORS is configured to allow requests from:  
 Local Development: http://localhost:3003
 Production: The deployed Netlify frontend and backend URLs.  
 Future Improvements:  
