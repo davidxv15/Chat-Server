@@ -33,17 +33,17 @@ This repository contains the backend server for the Real-Time Chat Application. 
 
 1. Clone the repository:  
    ```git clone https://github.com/davidxv15/Chat-Server.git```  
-   cd chat-app-backend
+   ```cd chat-app-backend```
 2. Install dependencies:  
-   npm install
+   ```npm install```
 3. Environment Setup:  
    Create a .env file in the project root with the following variables:  
-   MONGO_URI=your_mongodb_uri  
-   JWT_SECRET=your_jwt_secret  
-   PORT=3001  
-   RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key
+   ```MONGO_URI=your_mongodb_uri```  
+   ```JWT_SECRET=your_jwt_secret```  
+   ```PORT=3001```  
+   ```RECAPTCHA_SECRET_KEY=your_recaptcha_secret_key```
 4. Run the server:  
-   node server.js  
+   ```node server.js```  
    The server will start on http://localhost:3001.
 
 **WebSocket:**  
