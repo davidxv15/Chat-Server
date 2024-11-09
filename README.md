@@ -32,7 +32,7 @@ This repository contains the backend server for the Real-Time Chat Application. 
 ### How to Run Locally
 
 1. Clone the repository:  
-   git clone https://github.com/davidxv15/Chat-Server.git  
+   ```git clone https://github.com/davidxv15/Chat-Server.git```  
    cd chat-app-backend
 2. Install dependencies:  
    npm install
