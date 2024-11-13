@@ -48,7 +48,7 @@ This repository contains the backend server for the Real-Time Chat Application. 
 
 **WebSocket:**  
 To establish a WebSocket connection, use the following endpoint, replacing your-jwt-token with a valid JWT token:  
-ws://https://sheltered-ocean-88159-0aef28cb17ba.herokuapp.com/ws/ws?token=your-jwt-token
+ws://https://sheltered-ocean-88159-0aef28cb17ba.herokuapp.com/ws/ws?token=your-jwt-token  
 **Deployment:**  
 The backend is deployed on Heroku. It connects to a MongoDB Atlas database and interfaces with the frontend on Netlify. You can access the app via the frontend at:  
 Frontend URL: https://capable-selkie-5113d6.netlify.app/
