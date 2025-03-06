@@ -1,8 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const { Server } = require("ws"); // WebSocket import
-const jwt = require("jsonwebtoken");
-const authRoutes = require("./routes/auth");
+const { Server } = require("ws"); // my WebSocket lib import
+const jwt = require("jsonwebtoken"); // JWT library
+
+const authRoutes = require("./routes/authenticationRoutes");
+
+// const contentRoutes = require("./Routes/content")
 const { protect } = require("./middleware/auth");
 
 require("dotenv").config();
@@ -21,10 +24,16 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: allowedOrigins, // Allow only specified origins
-    credentials: true, // Required for authentication (JWT, Cookies)
-    methods: "GET,POST,PUT,DELETE,OPTIONS", // Allow standard HTTP methods
-    allowedHeaders: "Content-Type,Authorization", // Allow authentication headers
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "Origin,X-Requested-With,Content-Type,Accept,Authorization"
   })
 );
 
