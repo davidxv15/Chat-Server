@@ -50,9 +50,11 @@ db.once("open", function () {
 
 app.use("/api/auth", authRoutes);
 
-const server = app.listen(3000, () => {
-  console.log("Server running on port 3000");
+const PORT = process.env.PORT || 3001;  // Use Heroku's dynamic port
+const server = app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
+
 
 // WebSocket server
 const wss = new Server({ server, path: "/ws" });
