@@ -14,20 +14,17 @@ const cors = require("cors");
 
 const allowedOrigins = [
   "http://localhost:3003", // Development URL
-  "https://sheltered-ocean-88159.herokuapp.com", // Heroku
-  "https://chat-department.netlify.app",
-  "https://capable-selkie-5113d6.netlify.app", // Netlify 
+  "https://sheltered-ocean-88159.herokuapp.com", // Heroku Backend
+  "https://chat-department.netlify.app", // Netlify Frontend
+  "https://capable-selkie-5113d6.netlify.app", // "" backend
 ];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: allowedOrigins, // Allow only specified origins
+    credentials: true, // Required for authentication (JWT, Cookies)
+    methods: "GET,POST,PUT,DELETE,OPTIONS", // Allow standard HTTP methods
+    allowedHeaders: "Content-Type,Authorization", // Allow authentication headers
   })
 );
 
