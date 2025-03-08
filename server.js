@@ -6,7 +6,6 @@ const verifyCaptchaRoute = require("./routes/verify-captcha"); // Import verify-
 
 
 const authRoutes = require("./routes/authenticationRoutes");
-app.use("/api/verify-captcha", verifyCaptchaRoute);
 
 
 // const contentRoutes = require("./Routes/content")
@@ -15,7 +14,9 @@ const { protect } = require("./middleware/auth");
 require("dotenv").config();
 
 const app = express();
+
 app.use(express.json());
+app.use("/api/verify-captcha", verifyCaptchaRoute);
 
 const cors = require("cors");
 
