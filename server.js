@@ -10,8 +10,12 @@ const authRoutes = require("./routes/authenticationRoutes");
 
 // const contentRoutes = require("./Routes/content")
 const { protect } = require("./middleware/auth");
+const axios = require("axios");
+const Message = require("./models/Message");
 
 require("dotenv").config();
+console.log("Space ID:", process.env.CONTENTFUL_SPACE_ID);
+console.log("Access Token:", process.env.CONTENTFUL_ACCESS_TOKEN);
 
 const app = express();
 
@@ -54,6 +58,43 @@ db.once("open", function () {
 });
 
 app.use("/api/auth", authRoutes);
+console.log("/api/auth routes initialized");
+
+// app.use("/api/content", contentRoutes);
+// console.log("/api/content routes initialized");
+// Test route to ensure the server is running
+app.get("/api/test", (req, res) => {
+  res.json({ message: "Server is working!" });
+});
+
+app.get("/", (req, res) => {
+  res.send("Welcome to the Chat App! Server is running.");
+});
+
+app.post("/api/verify-captcha", async (req, res) => {
+  const { token } = req.body;
+  console.log("JWT Secret:", process.env.JWT_SECRET);
+
+  if (!token) {
+    return res.status(400).json({ message: "No CAPTCHA token provided" });
+  }
+
+  // Verify the token with recaptcha api.
+  try {
+    const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`;
+    const response = await axios.post(verificationUrl);
+    const { success } = response.data;
+
+    if (success) {
+      res.json({ message: "Verification successful" });
+    } else {
+      res.status(400).json({ message: "CAPTCHA verification failed" });
+    }
+  } catch (error) {
+    console.error("CAPTCHA verification error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 const PORT = process.env.PORT || 3001;  // Use Heroku's dynamic port
 const server = app.listen(PORT, () => {
@@ -84,6 +125,48 @@ const broadcastUserList = (room) => {
 };
 
 
+// Keep track of clients in each room
+const rooms = {}; // { roomName: [user1, user2, ...] }
+
+// Function to broadcast the updated user list to all clients in the room
+const broadcastUserList = (room) => {
+  const updatedUserList = rooms[room] || [];
+
+  // Broadcast the updated user list to all clients in the room
+  wss.clients.forEach((client) => {
+    if (client.readyState === client.OPEN) {
+      client.send(
+        JSON.stringify({
+          type: "userListUpdate",
+          room: room,
+          users: updatedUserList,
+        })
+      );
+    }
+  });
+};
+
+// Function to broadcast a new message to all clients in a room
+const broadcastMessage = (room, messageData) => {
+  wss.clients.forEach((client) => {
+    if (client.readyState === client.OPEN) {
+      client.send(JSON.stringify(messageData));
+    }
+  });
+};
+
+// Get all messages for a specific room
+app.get("/api/messages/:room", async (req, res) => {
+  const { room } = req.params;
+  try {
+    const messages = await Message.find({ room });
+    res.json(messages);
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 wss.on("connection", (socket, req) => {
   // Extract the token from the URL query string
   const token = req.url.split("token=")[1];
@@ -94,15 +177,16 @@ wss.on("connection", (socket, req) => {
 
   try {
     // Verify the token
-    const decoded = jwt.verify(token, "your_jwt_secret");
-    socket.user = { id: decoded.id, username: decoded.username || "Anonymous" };
-    socket.userRooms = []; //track rooms
-
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    socket.user = { id: decoded.id, username: decoded.username }; // setting to use username
     console.log("Client connected with user ID:", socket.user.id);
 
     socket.userRooms = [];  // tracks user's current room
 
     socket.on("message", (message) => {
+      console.log("Received:", message.toString());
+
+      // Ensure the message is a JSON string
       let messageData;
 
       try {
@@ -112,93 +196,40 @@ wss.on("connection", (socket, req) => {
         return;
       }
 
-      // Handle room joining
-      if (messageData.type === "join") {
-        const room = messageData.room;
+      const jsonString = JSON.stringify(messageData);
 
-        // Add user to the room if not already present
-        if (!rooms[room]) {
-          rooms[room] = [];
+      // Broadcast the JSONmessage to ALL clients. think 'open back and forth'
+      wss.clients.forEach((client) => {
+        if (client.readyState === client.OPEN) {
+          client.send(jsonString); // Send the message as it was received (already JSON-stringified)
         }
-
-        if (!rooms[room].includes(socket.user.username)) {
-          rooms[room].push(socket.user.username);
-        }
-
-        // Track the room the user joined
-        if (!socket.userRooms.includes(room)) {
-          socket.userRooms.push(room);
-        }
-
-        // Broadcast the updated user list
-        broadcastUserList(room);
-      }
-
-      // Handle typing events
-      if (messageData.type === "typing" && messageData.room) {
-        wss.clients.forEach((client) => {
-          if (
-            client.room === messageData.room &&
-            client.readyState === client.OPEN
-          ) {
-            client.send(
-              JSON.stringify({
-                type: "typing",
-                username: messageData.username,
-                room: messageData.room,
-                typing: messageData.typing,
-              })
-            );
-          }
-        });
-      }
-
-      // Broadcast message only to the current room users
-      if (messageData.type === "message" && messageData.room) {
-        const room = messageData.room;
-        const jsonString = JSON.stringify({
-          username: socket.user.username || "Anonymous",
-          message: messageData.message,
-          room: room,
-        });
-
-
-        
-        // Broadcast to everyone in the same room
-        wss.clients.forEach((client) => {
-          if (
-            client.room === room &&
-            client.readyState === client.OPEN
-          ) {
-            client.send(jsonString);
-          }
-        });
-      }
+      });
     });
 
-    socket.on("close", () => {
-        // Remove the user from all rooms they have visited when they disconnect
-          socket.userRooms.forEach((room) => {
-            if (rooms[room]) {
-              rooms[room] = rooms[room].filter(
-                (username) => username !== socket.user.username
-              );
-              
-              // Broadcast the updated user list to remaining clients in that room
-              broadcastUserList(room);
-            }
-          });
-    
-          console.log(`${socket.user.username} disconnected from all visited rooms`);
-        });
-    
+    socket.on("error", (error) => {
+      console.error("WebSocket error:", error);
+    });
+
+    socket.on("close", (code, reason) => {
+      console.log(`Client disconnected (code: ${code}, reason: ${reason})`);
+    });
   } catch (error) {
     console.error("Token verification failed:", error.message);
     socket.close(4002, "Token invalid");
   }
 });
 
-console.log("WebSocket server is running on ws://localhost:3000");
+// Route to delete all messages for a user
+app.delete("/api/messages/:username", async (req, res) => {
+  const username = req.params.username;
 
-const listEndpoints = require("express-list-endpoints");
-console.log("Registered Routes:", listEndpoints(app));
+  try {
+    await Message.deleteMany({ username }); // Delete all messages by the user
+    res.status(200).json({ message: "Messages deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting messages:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+console.log("WebSocket server is running on ws://localhost:3001");
