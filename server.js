@@ -199,3 +199,6 @@ wss.on("connection", (socket, req) => {
 });
 
 console.log("WebSocket server is running on ws://localhost:3000");
+
+const listEndpoints = require("express-list-endpoints");
+console.log("Registered Routes:", listEndpoints(app));
