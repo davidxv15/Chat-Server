@@ -125,27 +125,6 @@ const broadcastUserList = (room) => {
 };
 
 
-// Keep track of clients in each room
-const rooms = {}; // { roomName: [user1, user2, ...] }
-
-// Function to broadcast the updated user list to all clients in the room
-const broadcastUserList = (room) => {
-  const updatedUserList = rooms[room] || [];
-
-  // Broadcast the updated user list to all clients in the room
-  wss.clients.forEach((client) => {
-    if (client.readyState === client.OPEN) {
-      client.send(
-        JSON.stringify({
-          type: "userListUpdate",
-          room: room,
-          users: updatedUserList,
-        })
-      );
-    }
-  });
-};
-
 // Function to broadcast a new message to all clients in a room
 const broadcastMessage = (room, messageData) => {
   wss.clients.forEach((client) => {
