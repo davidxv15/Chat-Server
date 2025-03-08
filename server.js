@@ -2,11 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const { Server } = require("ws"); // my WebSocket lib import
 const jwt = require("jsonwebtoken"); // JWT library
-const verifyCaptchaRoute = require("./routes/verify-captcha"); // Import verify-captcha route
-
 
 const authRoutes = require("./routes/authenticationRoutes");
-
 
 // const contentRoutes = require("./Routes/content")
 const { protect } = require("./middleware/auth");
@@ -18,9 +15,7 @@ console.log("Space ID:", process.env.CONTENTFUL_SPACE_ID);
 console.log("Access Token:", process.env.CONTENTFUL_ACCESS_TOKEN);
 
 const app = express();
-
-app.use(express.json());
-app.use("/api/verify-captcha", verifyCaptchaRoute);
+app.use(express.json()); // Middleware to parse JSON request bodies
 
 const cors = require("cors");
 
@@ -40,9 +35,7 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true,
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    allowedHeaders: "Origin,X-Requested-With,Content-Type,Accept,Authorization"
+    credentials: true, 
   })
 );
 
@@ -96,23 +89,23 @@ app.post("/api/verify-captcha", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3001;  // Use Heroku's dynamic port
+const PORT = process.env.PORT || 3001;
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-
-// WebSocket server
 const wss = new Server({ server, path: "/ws" });
-// Keep track of clients in each room in object, for user list
-const rooms = {};
+
+// Keep track of clients in each room
+const rooms = {}; // { roomName: [user1, user2, ...] }
 
 // Function to broadcast the updated user list to all clients in the room
 const broadcastUserList = (room) => {
   const updatedUserList = rooms[room] || [];
 
+  // Broadcast the updated user list to all clients in the room
   wss.clients.forEach((client) => {
-    if (client.readyState === client.OPEN && client.room === room) {
+    if (client.readyState === client.OPEN) {
       client.send(
         JSON.stringify({
           type: "userListUpdate",
@@ -123,7 +116,6 @@ const broadcastUserList = (room) => {
     }
   });
 };
-
 
 // Function to broadcast a new message to all clients in a room
 const broadcastMessage = (room, messageData) => {
@@ -160,37 +152,88 @@ wss.on("connection", (socket, req) => {
     socket.user = { id: decoded.id, username: decoded.username }; // setting to use username
     console.log("Client connected with user ID:", socket.user.id);
 
-    socket.userRooms = [];  // tracks user's current room
+    // Keep track of the rooms the user joins
+    socket.userRooms = [];
 
-    socket.on("message", (message) => {
+    socket.on("message", async (message) => {
       console.log("Received:", message.toString());
-
-      // Ensure the message is a JSON string
+      // Ensure the message as a JSON string
       let messageData;
-
       try {
         messageData = JSON.parse(message);
       } catch (e) {
-        console.error("Message is not JSON:", message);
-        return;
+        console.error("Message is not JSON, sending as string:", message);
+        messageData = { username: socket.user.username, message };
       }
 
-      const jsonString = JSON.stringify(messageData);
+      if (messageData.type === "join") {
+        const { room, username } = messageData;
 
-      // Broadcast the JSONmessage to ALL clients. think 'open back and forth'
-      wss.clients.forEach((client) => {
-        if (client.readyState === client.OPEN) {
-          client.send(jsonString); // Send the message as it was received (already JSON-stringified)
+        // Add user to the room if not already in it
+        if (!rooms[room]) rooms[room] = [];
+        if (!rooms[room].includes(username)) {
+          rooms[room].push(username);
+          broadcastUserList(room);
         }
-      });
+
+        socket.userRooms.push(room); // Track rooms user is in
+      } else if (messageData.type === "leave") {
+        const { room, username } = messageData;
+        rooms[room] = rooms[room].filter((user) => user !== username);
+        broadcastUserList(room);
+      } else if (messageData.type === "message") {
+        const { room, username, message, timestamp } = messageData;
+
+        // Save the message to the database
+        const newMessage = new Message({
+          room,
+          username,
+          message,
+          timestamp,
+        });
+        await newMessage.save();
+
+        broadcastMessage(room, messageData); // Broadcast message to all clients
+      }
+
+      // Broadcast other types of events like typing indicators, but not messages
+      if (messageData.type !== "message") {
+        const jsonString = JSON.stringify(messageData);
+        // Broadcast the JSONmessage to ALL clients. think 'open back and forth'
+        wss.clients.forEach((client) => {
+          if (client.readyState === client.OPEN) {
+            client.send(jsonString); // Send the message as it was received (already JSON-stringified)
+          }
+        });
+      }
     });
 
     socket.on("error", (error) => {
       console.error("WebSocket error:", error);
     });
 
-    socket.on("close", (code, reason) => {
-      console.log(`Client disconnected (code: ${code}, reason: ${reason})`);
+    socket.on("close", async () => {
+      wss.clients.forEach((client) => {
+        if (client.readyState === client.OPEN) {
+          client.send(
+            JSON.stringify({
+              type: "userLoggedOut",
+              username: socket.user.username, // Send the logged-out username
+            })
+          );
+        }
+      });
+
+      socket.userRooms.forEach((room) => {
+        rooms[room] = rooms[room].filter(
+          (user) => user !== socket.user.username
+        );
+        broadcastUserList(room);
+      });
+
+      await Message.deleteMany({ username: socket.user.username }); // Delete messages on disconnect
+
+      console.log(`Client disconnected (ID: ${socket.user.id})`);
     });
   } catch (error) {
     console.error("Token verification failed:", error.message);
