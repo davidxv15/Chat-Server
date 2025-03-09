@@ -1,11 +1,8 @@
-// DV checking in, check caps on the word "route"
 const express = require("express");
 const mongoose = require("mongoose");
 const { Server } = require("ws"); // my WebSocket lib import
 const jwt = require("jsonwebtoken"); // JWT library
-
-const authRoutes = require("./routes/authenticationRoutes");
-
+const authRoutes = require("./Routes/auth");
 // const contentRoutes = require("./Routes/content")
 const { protect } = require("./middleware/auth");
 const axios = require("axios");
@@ -19,26 +16,7 @@ const app = express();
 app.use(express.json()); // Middleware to parse JSON request bodies
 
 const cors = require("cors");
-
-const allowedOrigins = [
-  "http://localhost:3003", // Development URL
-  "https://sheltered-ocean-88159.herokuapp.com", // Heroku Backend
-  "https://chat-department.netlify.app", // Netlify Frontend
-  "https://capable-selkie-5113d6.netlify.app", // "" backend
-];
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true, 
-  })
-);
+app.use(cors()); // Enabling CORS for cross-origin requests
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -61,11 +39,7 @@ app.get("/api/test", (req, res) => {
   res.json({ message: "Server is working!" });
 });
 
-app.get("/", (req, res) => {
-  res.send("Welcome to the Chat App! Server is running.");
-});
-
-app.post("/api/verify-captcha", async (req, res) => {
+app.post("/verify-captcha", async (req, res) => {
   const { token } = req.body;
   console.log("JWT Secret:", process.env.JWT_SECRET);
 
@@ -90,9 +64,8 @@ app.post("/api/verify-captcha", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3001;
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const server = app.listen(3001, () => {
+  console.log("Server running on port 3001");
 });
 
 const wss = new Server({ server, path: "/ws" });
