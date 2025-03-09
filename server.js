@@ -39,7 +39,7 @@ app.get("/test", (req, res) => {
   res.json({ message: "Server is working!" });
 });
 
-app.post("/verify-captcha", async (req, res) => {
+app.post("/api/verify-captcha", async (req, res) => {
   const { token } = req.body;
   console.log("JWT Secret:", process.env.JWT_SECRET);
 
