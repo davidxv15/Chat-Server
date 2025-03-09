@@ -230,3 +230,5 @@ app.delete("/api/messages/:username", async (req, res) => {
 });
 
 console.log("WebSocket server is running on ws://localhost:3001");
+
+// check paths, routes, and keys for 3rd party update
