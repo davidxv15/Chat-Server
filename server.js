@@ -35,7 +35,7 @@ console.log("/auth routes initialized");
 // app.use("/api/content", contentRoutes);
 // console.log("/api/content routes initialized");
 // Test route to ensure the server is running
-app.get("/test", (req, res) => {
+app.get("/api/test", (req, res) => {
   res.json({ message: "Server is working!" });
 });
 
