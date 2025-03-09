@@ -29,17 +29,17 @@ db.once("open", function () {
   console.log("Connected to MongoDB Atlas");
 });
 
-app.use("/api/auth", authRoutes);
-console.log("/api/auth routes initialized");
+app.use("/auth", authRoutes);
+console.log("/auth routes initialized");
 
 // app.use("/api/content", contentRoutes);
 // console.log("/api/content routes initialized");
 // Test route to ensure the server is running
-app.get("/api/test", (req, res) => {
+app.get("/test", (req, res) => {
   res.json({ message: "Server is working!" });
 });
 
-app.post("/api/verify-captcha", async (req, res) => {
+app.post("/verify-captcha", async (req, res) => {
   const { token } = req.body;
   console.log("JWT Secret:", process.env.JWT_SECRET);
 
@@ -102,7 +102,7 @@ const broadcastMessage = (room, messageData) => {
 };
 
 // Get all messages for a specific room
-app.get("/api/messages/:room", async (req, res) => {
+app.get("/messages/:room", async (req, res) => {
   const { room } = req.params;
   try {
     const messages = await Message.find({ room });
@@ -217,7 +217,7 @@ wss.on("connection", (socket, req) => {
 });
 
 // Route to delete all messages for a user
-app.delete("/api/messages/:username", async (req, res) => {
+app.delete("/messages/:username", async (req, res) => {
   const username = req.params.username;
 
   try {
