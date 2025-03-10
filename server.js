@@ -143,7 +143,6 @@ wss.on("connection", (socket, req) => {
 
       if (messageData.type === "join") {
         const { room, username } = messageData;
-
         // Add user to the room if not already in it
         if (!rooms[room]) rooms[room] = [];
         if (!rooms[room].includes(username)) {
